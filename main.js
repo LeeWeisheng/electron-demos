@@ -12,6 +12,7 @@ function createWindow() {
   });
 
   mainWindow.loadFile("index.html");
+  mainWindow.webContents.openDevTools();
 }
 
 app.whenReady().then(() => {
@@ -25,5 +26,7 @@ app.whenReady().then(() => {
 });
 
 app.on("window-all-closed", function () {
-  if (process.platform !== "darwin") app.quit();
+  if (process.platform !== "darwin") {
+    app.quit();
+  }
 });
