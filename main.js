@@ -1,5 +1,5 @@
 const path = require("path");
-const { app, BrowserWindow } = require("electron");
+const { app, ipcMain, BrowserWindow } = require("electron");
 
 try {
   require("electron-reloader")(module);
@@ -15,6 +15,8 @@ function createWindow() {
   });
 
   mainWindow.loadFile("index.html");
+
+  ipcMain.handle("ping", () => "pong");
 
   // 显示开发者工具
   // mainWindow.webContents.openDevTools();
