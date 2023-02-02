@@ -1,5 +1,5 @@
 const path = require("path");
-const { app, ipcMain, BrowserWindow } = require("electron");
+const { app, ipcMain, BrowserWindow, dialog, Menu } = require("electron");
 
 try {
   require("electron-reloader")(module);
@@ -14,15 +14,45 @@ function createWindow() {
     },
   });
 
+  const menu = Menu.buildFromTemplate([
+    {
+      label: app.name,
+      submenu: [
+        {
+          label: "Increase",
+          click: () => {
+            mainWindow.webContents.send("update-counter", 1);
+          },
+        },
+        {
+          label: "Decrease",
+          click: () => {
+            mainWindow.webContents.send("update-counter", -1);
+          },
+        },
+      ],
+    },
+  ]);
+
+  Menu.setApplicationMenu(menu);
+
   mainWindow.loadFile("index.html");
-
-  ipcMain.handle("ping", () => "pong");
-
-  // 显示开发者工具
-  // mainWindow.webContents.openDevTools();
 }
 
 app.whenReady().then(() => {
+  ipcMain.on("set-title", (event, title) => {
+    BrowserWindow.fromWebContents(event.sender).setTitle(title);
+  });
+
+  ipcMain.handle("dialog:openFile", async () => {
+    const { canceled, filePaths } = await dialog.showOpenDialog();
+    if (canceled) {
+      return;
+    } else {
+      return filePaths[0];
+    }
+  });
+
   createWindow();
 
   app.on("activate", function () {
