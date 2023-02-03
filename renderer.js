@@ -1,22 +1,13 @@
-const titleInput = document.getElementById("titleInput");
-const titleButton = document.getElementById("titleButton");
-
-titleButton.addEventListener("click", () => {
-  window.desktop.setTitle(titleInput.value);
-});
-
-const fileButton = document.getElementById("fileButton");
-const filePath = document.getElementById("filePath");
-
-fileButton.addEventListener("click", () => {
-  window.desktop.openFile().then((response) => {
-    filePath.innerText = response;
+document.getElementById("toggle-button").addEventListener("click", () => {
+  window.theme.toggle().then((isDarkMode) => {
+    document.getElementById("theme-label").innerText = isDarkMode
+      ? "Dark"
+      : "Light";
   });
 });
 
-const counter = document.getElementById("counter");
-window.desktop.handleCounter((event, value) => {
-  const oldValue = Number(counter.innerText);
-  const newValue = oldValue + value;
-  counter.innerText = newValue;
+document.getElementById("follow-system").addEventListener("click", () => {
+  window.theme.system().then(() => {
+    document.getElementById("theme-label").innerText = "System";
+  });
 });

@@ -7,20 +7,14 @@
       http-equiv="Content-Security-Policy"
       content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'"
     />
-    <title>IPC</title>
+    <title>主题</title>
+    <link rel="stylesheet" type="text/css" href="./style.css" />
   </head>
   <body>
-    Title: <input id="titleInput" />
-    <button id="titleButton">Set</button>
+    <p>当前主题：<span id="theme-label">系统</span></p>
 
-    <hr />
-
-    <button id="fileButton">Open a File</button>
-    File path: <strong id="filePath"></strong>
-
-    <hr />
-
-    Counter: <span id="counter">0</span>
+    <button id="toggle-button">切换主题</button>
+    <button id="follow-system">跟随系统</button>
 
     <script src="./renderer.js"></script>
   </body>

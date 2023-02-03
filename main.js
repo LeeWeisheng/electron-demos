@@ -1,5 +1,12 @@
 const path = require("path");
-const { app, ipcMain, BrowserWindow, dialog, Menu } = require("electron");
+const {
+  app,
+  ipcMain,
+  BrowserWindow,
+  dialog,
+  Menu,
+  nativeTheme,
+} = require("electron");
 
 try {
   require("electron-reloader")(module);
@@ -14,45 +21,25 @@ function createWindow() {
     },
   });
 
-  const menu = Menu.buildFromTemplate([
-    {
-      label: app.name,
-      submenu: [
-        {
-          label: "Increase",
-          click: () => {
-            mainWindow.webContents.send("update-counter", 1);
-          },
-        },
-        {
-          label: "Decrease",
-          click: () => {
-            mainWindow.webContents.send("update-counter", -1);
-          },
-        },
-      ],
-    },
-  ]);
-
-  Menu.setApplicationMenu(menu);
-
   mainWindow.loadFile("index.html");
+
+  ipcMain.handle("theme:toggle", () => {
+    if (nativeTheme.shouldUseDarkColors) {
+      nativeTheme.themeSource = "light";
+    } else {
+      nativeTheme.themeSource = "dark";
+    }
+    return nativeTheme.shouldUseDarkColors;
+  });
+
+  ipcMain.handle("theme:system", () => {
+    nativeTheme.themeSource = "system";
+  });
 }
 
+Menu.setApplicationMenu(null);
+
 app.whenReady().then(() => {
-  ipcMain.on("set-title", (event, title) => {
-    BrowserWindow.fromWebContents(event.sender).setTitle(title);
-  });
-
-  ipcMain.handle("dialog:openFile", async () => {
-    const { canceled, filePaths } = await dialog.showOpenDialog();
-    if (canceled) {
-      return;
-    } else {
-      return filePaths[0];
-    }
-  });
-
   createWindow();
 
   app.on("activate", function () {
